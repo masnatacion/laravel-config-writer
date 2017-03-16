@@ -1,6 +1,6 @@
 <?php
 
-use October\Rain\Config\Rewrite;
+use SergeyMiracle\Config\Rewrite;
 
 class RewriteTest extends TestCase
 {
@@ -95,7 +95,7 @@ class RewriteTest extends TestCase
         $this->assertArrayHasKey('memcached', $result);
         $this->assertArrayHasKey('weight', $result['memcached']);
         $this->assertFalse($result['memcached']['weight']);
-        
+
         $this->assertArrayHasKey('connections', $result);
         $this->assertArrayHasKey('pgsql', $result['connections']);
         $this->assertArrayHasKey('password', $result['connections']['pgsql']);

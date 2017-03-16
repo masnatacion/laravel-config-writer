@@ -23,7 +23,7 @@ class FileWriter
     /**
      * The config rewriter object.
      *
-     * @var \October\Rain\Config\Rewrite
+     * @var \SergeyMiracle\Config\Rewrite
      */
     protected $rewriter;
 
@@ -44,8 +44,8 @@ class FileWriter
     public function write($item, $value, $filename)
     {
         $path = $this->getPath($item, $filename);
-        if (!$path)
-            return false;
+
+        if (!$path) return false;
 
         $contents = $this->files->get($path);
         $contents = $this->rewriter->toContent($contents, [$item => $value]);
@@ -56,10 +56,10 @@ class FileWriter
     private function getPath($item, $filename)
     {
         $file = "{$this->defaultPath}/{$filename}.php";
-        if ($this->files->exists($file) &&
-            $this->hasKey($file, $item)
-        )
+
+        if ($this->files->exists($file) && $this->hasKey($file, $item)) {
             return $file;
+        }
 
         return null;
     }
@@ -68,13 +68,12 @@ class FileWriter
     {
         $contents = file_get_contents($path);
         $vars = eval('?>' . $contents);
-
         $keys = explode('.', $key);
 
         $isset = false;
         while ($key = array_shift($keys)) {
             $isset = isset($vars[$key]);
-            if (is_array($vars[$key])) $vars = $vars[$key]; // Go down the rabbit hole
+            if (is_array($vars[$key])) $vars = $vars[$key];
         }
 
         return $isset;
