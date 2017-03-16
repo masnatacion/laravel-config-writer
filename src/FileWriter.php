@@ -1,4 +1,6 @@
-<?php namespace October\Rain\Config;
+<?php
+
+namespace SergeyMiracle\Config;
 
 use Illuminate\Filesystem\Filesystem;
 
@@ -28,8 +30,8 @@ class FileWriter
     /**
      * Create a new file configuration loader.
      *
-     * @param  \Illuminate\Filesystem\Filesystem  $files
-     * @param  string  $defaultPath
+     * @param  \Illuminate\Filesystem\Filesystem $files
+     * @param  string $defaultPath
      * @return void
      */
     public function __construct(Filesystem $files, $defaultPath)
@@ -54,7 +56,7 @@ class FileWriter
     private function getPath($item, $filename)
     {
         $file = "{$this->defaultPath}/{$filename}.php";
-        if ( $this->files->exists($file) &&
+        if ($this->files->exists($file) &&
             $this->hasKey($file, $item)
         )
             return $file;
@@ -65,7 +67,7 @@ class FileWriter
     private function hasKey($path, $key)
     {
         $contents = file_get_contents($path);
-        $vars = eval('?>'.$contents);
+        $vars = eval('?>' . $contents);
 
         $keys = explode('.', $key);
 

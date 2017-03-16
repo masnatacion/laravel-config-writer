@@ -1,28 +1,9 @@
-<?php namespace October\Rain\Config;
+<?php
+
+namespace SergeyMiracle\Config;
 
 use Exception;
 
-/**
- * Configuration rewriter
- *
- * https://github.com/daftspunk/laravel-config-writer
- *
- * This class lets you rewrite array values inside a basic configuration file
- * that returns a single array definition (a Laravel config file) whilst maintaining
- * the integrity of the file, leaving comments and advanced settings intact.
- *
- * The following value types are supported for writing:
- * - strings
- * - integers
- * - booleans
- * - nulls
- * - single-dimension arrays
- *
- * To do:
- * - When an entry does not exist, provide a way to create it
- *
- * Pro Regextip: Use [\s\S] instead of . for multiline support
- */
 class Rewrite
 {
 
@@ -42,7 +23,7 @@ class Rewrite
             return $contents;
         }
 
-        $result = eval('?>'.$contents);
+        $result = eval('?>' . $contents);
 
         foreach ($newValues as $key => $expectedValue) {
             $parts = explode('.', $key);
@@ -91,7 +72,7 @@ class Rewrite
         $patterns[] = $this->buildArrayExpression($key, $items);
 
         foreach ($patterns as $pattern) {
-            $result = preg_replace($pattern, '${1}${2}'.$replaceValue, $result, 1, $count);
+            $result = preg_replace($pattern, '${1}${2}' . $replaceValue, $result, 1, $count);
 
             if ($count > 0) {
                 break;
@@ -104,21 +85,16 @@ class Rewrite
     protected function writeValueToPhp($value)
     {
         if (is_string($value) && strpos($value, "'") === false) {
-            $replaceValue = "'".$value."'";
-        }
-        elseif (is_string($value) && strpos($value, '"') === false) {
-            $replaceValue = '"'.$value.'"';
-        }
-        elseif (is_bool($value)) {
+            $replaceValue = "'" . $value . "'";
+        } elseif (is_string($value) && strpos($value, '"') === false) {
+            $replaceValue = '"' . $value . '"';
+        } elseif (is_bool($value)) {
             $replaceValue = ($value ? 'true' : 'false');
-        }
-        elseif (is_null($value)) {
+        } elseif (is_null($value)) {
             $replaceValue = 'null';
-        }
-        elseif (is_array($value) && count($value) === count($value, COUNT_RECURSIVE)) {
+        } elseif (is_array($value) && count($value) === count($value, COUNT_RECURSIVE)) {
             $replaceValue = $this->writeArrayToPhp($value);
-        }
-        else {
+        } else {
             $replaceValue = $value;
         }
 
@@ -137,9 +113,7 @@ class Rewrite
             }
         }
 
-        return '['.implode(', ', $result).']';
-
-        return $result;
+        return '[' . implode(', ', $result) . ']';
     }
 
     protected function buildStringExpression($targetKey, $arrayItems = array(), $quoteChar = "'")
@@ -150,13 +124,13 @@ class Rewrite
         $expression[] = $this->buildArrayOpeningExpression($arrayItems);
 
         // The target key opening
-        $expression[] = '([\'|"]'.$targetKey.'[\'|"]\s*=>\s*)['.$quoteChar.']';
+        $expression[] = '([\'|"]' . $targetKey . '[\'|"]\s*=>\s*)[' . $quoteChar . ']';
 
         // The target value to be replaced ($2)
-        $expression[] = '([^'.$quoteChar.']*)';
+        $expression[] = '([^' . $quoteChar . ']*)';
 
         // The target key closure
-        $expression[] = '['.$quoteChar.']';
+        $expression[] = '[' . $quoteChar . ']';
 
         return '/' . implode('', $expression) . '/';
     }
@@ -172,7 +146,7 @@ class Rewrite
         $expression[] = $this->buildArrayOpeningExpression($arrayItems);
 
         // The target key opening ($2)
-        $expression[] = '([\'|"]'.$targetKey.'[\'|"]\s*=>\s*)';
+        $expression[] = '([\'|"]' . $targetKey . '[\'|"]\s*=>\s*)';
 
         // The target value to be replaced ($3)
         $expression[] = '([tT][rR][uU][eE]|[fF][aA][lL][sS][eE]|[nN][uU][lL]{2}|[\d]+)';
@@ -191,7 +165,7 @@ class Rewrite
         $expression[] = $this->buildArrayOpeningExpression($arrayItems);
 
         // The target key opening ($2)
-        $expression[] = '([\'|"]'.$targetKey.'[\'|"]\s*=>\s*)';
+        $expression[] = '([\'|"]' . $targetKey . '[\'|"]\s*=>\s*)';
 
         // The target value to be replaced ($3)
         $expression[] = '(?:[aA][rR]{2}[aA][yY]\(|[\[])([^\]|)]*)[\]|)]';
@@ -205,13 +179,12 @@ class Rewrite
             $itemOpen = array();
             foreach ($arrayItems as $item) {
                 // The left hand array assignment
-                $itemOpen[] = '[\'|"]'.$item.'[\'|"]\s*=>\s*(?:[aA][rR]{2}[aA][yY]\(|[\[])';
+                $itemOpen[] = '[\'|"]' . $item . '[\'|"]\s*=>\s*(?:[aA][rR]{2}[aA][yY]\(|[\[])';
             }
 
             // Capture all opening array (non greedy)
             $result = '(' . implode('[\s\S]*', $itemOpen) . '[\s\S]*?)';
-        }
-        else {
+        } else {
             // Gotta capture something for $1
             $result = '()';
         }

@@ -1,4 +1,6 @@
-<?php namespace October\Rain\Config;
+<?php
+
+namespace SergeyMiracle\Config;
 
 use Illuminate\Config\Repository as RepositoryBase;
 
@@ -14,9 +16,8 @@ class Repository extends RepositoryBase
     /**
      * Create a new configuration repository.
      *
-     * @param  array  $items
+     * @param  array $items
      * @param  FileWriter $writer
-     * @return void
      */
     public function __construct($items = array(), $writer)
     {
@@ -27,18 +28,31 @@ class Repository extends RepositoryBase
     /**
      * Write a given configuration value to file.
      *
-     * @param string $key
-     * @param mixed $value
+     * @param array $values
      * @return void
+     * @throws \Exception
+     * @internal param string $key
+     * @internal param mixed $value
      */
-    public function write($key, $value)
+    public function write(array $values)
     {
-        list($filename, $item) = $this->parseKey($key);
-        $result = $this->writer->write($item, $value, $filename);
+        foreach ($values as $key => $value) {
+            $this->set($key, $value);
+            [$filename, $item] = $this->parseKey($key);
+            $config[$filename][$item] = $value;
+        }
 
-        if(!$result) throw new \Exception('File could not be written to');
+        foreach ($config as $filename => $items) {
+            $path = config_path($filename . '.php');
 
-        $this->set($key, $value);
+            if (!is_writeable($path)) {
+                throw new \Exception('Configuration file ' . $filename . '.php is not writable.');
+            }
+
+            if (!$this->rewrite->toFile($path, $items)) {
+                throw new \Exception('Unable to update configuration file ' . $filename . '.php');
+            }
+        }
     }
 
     /**
