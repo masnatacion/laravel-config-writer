@@ -5,7 +5,7 @@ namespace SergeyMiracle\Config;
 use Exception;
 
 /**
- * Configuration rewriter
+ * Configuration reWriter
  *
  * This class lets you rewrite array values inside a basic configuration file
  * that returns a single array definition (a Laravel config file) whilst maintaining
@@ -19,14 +19,10 @@ use Exception;
  * To do:
  * - When an entry does not exist, provide a way to create it
  *
- * Pro Regextip: Use [\s\S] instead of . for multiline support
+ * Pro Regex tip: Use [\s\S] instead of . for multi line support
  */
 class Rewrite
 {
-
-    public $contents;
-
-
     public function toFile($filePath, $newValues, $useValidation = true)
     {
         $contents = file_get_contents($filePath);
@@ -63,11 +59,7 @@ class Rewrite
             }
         }
 
-        return $this->contents = $contents;
-    }
-
-    public function getLastContents() {
-        return $this->contents;
+        return $contents;
     }
 
     protected function parseContent($contents, $newValues)
