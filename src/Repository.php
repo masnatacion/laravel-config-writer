@@ -7,11 +7,15 @@ use Illuminate\Config\Repository as RepositoryBase;
 class Repository extends RepositoryBase
 {
     /**
-     * The config rewriter object.
+     * The config rewrite object.
      *
      * @var string
      */
-    protected $writer;
+    protected $rewrite;
+    /**
+     * @var string
+     */
+    private $config_path;
 
     /**
      * Create a new configuration repository.
@@ -19,11 +23,12 @@ class Repository extends RepositoryBase
      * @param  array $items
      * @param  FileWriter $writer
      */
-    public function __construct($items = array(), $writer)
-    {
-        $this->writer = $writer;
-        parent::__construct($items);
-    }
+     public function __construct($items = array(), Rewrite $rewrite, $config_path)
+     {
+         $this->rewrite = $rewrite;
+         $this->config_path = $config_path;
+         parent::__construct($items);
+     }
 
     /**
      * Write a given configuration value to file.

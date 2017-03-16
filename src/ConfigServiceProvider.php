@@ -16,9 +16,7 @@ class ConfigServiceProvider extends ServiceProvider
         $config = app('config')->all();
 
         $this->app->singleton('config', function ($app) use ($config) {
-            $writer = new FileWriter($app['files'], $app['path.config']);
-
-            return new Repository($config, $writer);
+          return new Repository($config, new Rewrite(), $app['path.config']);
         });
     }
 }

@@ -4,16 +4,35 @@ namespace SergeyMiracle\Config;
 
 use Exception;
 
+/**
+ * Configuration rewriter
+ *
+ * This class lets you rewrite array values inside a basic configuration file
+ * that returns a single array definition (a Laravel config file) whilst maintaining
+ * the integrity of the file, leaving comments and advanced settings intact.
+ *
+ * The following value types are supported for writing:
+ * - strings
+ * - integers
+ * - booleans
+ *
+ * To do:
+ * - When an entry does not exist, provide a way to create it
+ *
+ * Pro Regextip: Use [\s\S] instead of . for multiline support
+ */
 class Rewrite
 {
+
+    public $contents;
+
 
     public function toFile($filePath, $newValues, $useValidation = true)
     {
         $contents = file_get_contents($filePath);
         $contents = $this->toContent($contents, $newValues, $useValidation);
-        file_put_contents($filePath, $contents);
 
-        return $contents;
+        return file_put_contents($filePath, $contents);
     }
 
     public function toContent($contents, $newValues, $useValidation = true)
@@ -44,7 +63,11 @@ class Rewrite
             }
         }
 
-        return $contents;
+        return $this->contents = $contents;
+    }
+
+    public function getLastContents() {
+        return $this->contents;
     }
 
     protected function parseContent($contents, $newValues)
