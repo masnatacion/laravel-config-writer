@@ -1,5 +1,5 @@
 {
-    "name": "sergeymiracle/config-writer",
+    "name": "masnatacion/laravel-config-writer",
     "description": "Configuration extension",
     "keywords": ["laravel", "config", "write"],
     "license": "MIT",
