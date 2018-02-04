@@ -10,7 +10,6 @@
         }
     ],
     "require": {
-        "php": ">=7.1.0",
         "illuminate/config": "~5.0."
     },
     "autoload": {
